@@ -17,14 +17,13 @@ TSet::TSet(const TSet &s) : BitField(s.BitField), MaxPower(s.MaxPower)
 }
 
 // конструктор преобразования типа
-TSet::TSet(const TBitField &bf) : BitField(bf)
+TSet::TSet(const TBitField &bf) : BitField(bf), MaxPower(bf.GetLength())
 {
-	MaxPower = bf.GetLength();
 }
 
 TSet::operator TBitField()
 {
-	return 0;
+	return BitField;
 }
 
 int TSet::GetMaxPower(void) const // получить макс. к-во эл-тов
@@ -34,22 +33,16 @@ int TSet::GetMaxPower(void) const // получить макс. к-во эл-т�
 
 int TSet::IsMember(const int Elem) const // элемент множества?
 {
-	if ((Elem < 0) || (Elem >= MaxPower))
-		throw "Неверные индекс";
     return BitField.GetBit(Elem);
 }
 
 void TSet::InsElem(const int Elem) // включение элемента множества
 {
-	if ((Elem < 0) || (Elem >= MaxPower))
-		throw "Неверные индекс";
 	BitField.SetBit(Elem);
 }
 
 void TSet::DelElem(const int Elem) // исключение элемента множества
 {
-	if ((Elem < 0) || (Elem >= MaxPower))
-		throw "Неверные индекс";
 	BitField.ClrBit(Elem);
 }
 
@@ -124,10 +117,13 @@ TSet TSet::operator~(void) // дополнение
 
 istream &operator>>(istream &istr, TSet &s) // ввод
 {
+	istr >> s.BitField;
+	s.MaxPower = s.BitField.GetLength();
 	return istr;
 }
 
 ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
+	ostr << s.BitField;
 	return ostr;
 }
